@@ -1,20 +1,27 @@
-﻿using System.Net.Http.Headers;
+﻿using DrinksInfo;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 using HttpClient client = new();
 client.DefaultRequestHeaders.Accept.Clear();
 client.DefaultRequestHeaders.Accept.Add(
-    new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+    new MediaTypeWithQualityHeaderValue("application/json"));
 client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Reporter");
 
 
 
+var response = await ProcessRepositoriesAsync(client);
 
-await ProcessRepositoriesAsync(client);
-
-static async Task ProcessRepositoriesAsync(HttpClient client)
+foreach(var drink in response)
 {
-    var json = await client.GetStringAsync(
-        "https://api.github.com/orgs/dotnet/repos");
+    Console.WriteLine(drink.idDrink);
+    Console.WriteLine(drink.strDrink);
+}
 
-    Console.Write(json);
+static async Task<List<Drinks>> ProcessRepositoriesAsync(HttpClient client)
+{
+    var response = await client.GetFromJsonAsync<Root>(
+        "http://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail");
+
+    return response?.drinks ?? new List<Drinks>();
 }
