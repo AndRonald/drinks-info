@@ -1,6 +1,5 @@
 ﻿namespace DrinksInfo
 {
-    // Root myDeserializedClass = JsonConvert.Deserializestring?<Root>(myJsonResponse);
     public class Drinks
     {
         public string? idDrink { get; set; }
